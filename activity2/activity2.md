@@ -13,11 +13,11 @@ This activity will require you to:
 ### Setup
 > Download the MetaMask browser extension and setup 2 accounts.
 
-![Create MetaMask Accounts](/images/Metamask_create_account.png)
+![Create MetaMask Accounts](images/MetaMask_create_account.png)
 
 > Send some Ether to your Account 1 address using https://faucet.ropsten.be (you should receive 1 ETH).
 
-![Send test Ether](/images/Ropsten_Eth_Faucet.png)
+![Send test Ether](images/Ropsten_Eth_Faucet.png)
 
 > Copy the private keys of these two accounts. **Note: In general, you should not disclose your priviate key to anyone as it can be used to steal assets held in your acocunt~**
 
