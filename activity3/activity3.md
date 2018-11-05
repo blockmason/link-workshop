@@ -82,7 +82,7 @@ By using the keyword `public`, we are able to access the `loans` dictionary and 
 
 The files in the `migrations/` folder will deploy the contracts onto the blockchain. 
 
->Copy the approach in the default `1_initial_migration.js` file to deploy the `Lending` smart contract:
+>Copy and adapt the code in the default `1_initial_migration.js` file to deploy the `Lending` smart contract:
 ```
     const Lending = artifacts.require("./Lending.sol");
 
@@ -108,5 +108,32 @@ In addition, you should also see the first account in Ganache have slightly less
 
 So we have now created our Lending smart contract and deployed it to our local blockchain.
 
-### Front-end JavaScript
+### Front-end Setup with MetaMask
+In order to interact with our Lending smart contract, we will work with a basic front-end consisting of HTML/CSS and JavaScript. We will use Bootstrap for our CSS. 
+
+The focus for this part of the activity will be on the JavaScript code in `src/js/app.js`. 
+
+Notice in our `package.json` that we have `lite-server` installed under the `dev` script, which will be used to run our Lending app locally. 
+
+> To get the Lending app up and running using `lite-server`, run:
+```
+    npm run dev
+```
+> Now direct your browser to `http://localhost:3000` to see the Loans Dashboard.
+
+You will notice that the web page indicates it is loading, but no content appears because we need to first connect the front-end application with our local blockchain. We will do this by setting up the MetaMask chrome extension, similar to what we did in Activity 2.
+
+> Open up the MetaMask extension and *Import using account seed phrase*. The phrase will be the mnemonic from Ganache. 
+
+![Import using account seed phrase](images/MetaMask_restore_seed_phrase.png)
+
+>Then from the list of networks, select `Custom RPC`. Here, set the *New RPC URL* to `http://127.0.0.1:7545`
+
+![Set new RPC](images/MetaMask_set_rpc.png)
+
+Now your Lending Dashboard should load. 
+
+>**Note:** While all 10 of your local Ganache blockchain accounts should load automatically, you may only end up with just the first account and you will have to add additonal accounts manually using the *Import Account* function. 
+![Import account](images/MetaMask_import_account.png)
+
 
