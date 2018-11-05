@@ -131,9 +131,119 @@ You will notice that the web page indicates it is loading, but no content appear
 
 ![Set new RPC](images/MetaMask_set_rpc.png)
 
-Now your Lending Dashboard should load. 
-
 >**Note:** While all 10 of your local Ganache blockchain accounts should load automatically, you may only end up with just the first account and you will have to add additonal accounts manually using the *Import Account* function. 
 ![Import account](images/MetaMask_import_account.png)
+
+>Once MetaMask is properly configured, you should see your web application load.
+![Loaded dashboard](images/Lending_dashboard_loaded.png)
+
+### Front-end HTML code
+> Look through `src/index.html` which is a basic template for our Lending app. Note in particular:
+* The `loader` and `content` divs
+* The function called on form submission
+* The components of the form
+* The `accountAddress` info after the form
+
+### Configure app.js
+The scaffolding code for our `app.js` looks like the following which runs the web app upon window load and initiates and sets the web3 provider:
+```
+App = {
+  web3Provider: null,
+  contracts: {},
+  account: '0x0',
+
+  init: function() {
+    return App.initWeb3();
+  },
+
+  initWeb3: function() {
+    if (typeof web3 !== 'undefined') {
+      // If a web3 instance is already provided by MetaMask.
+      App.web3Provider = web3.currentProvider;
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // Specify default instance if no web3 instance provided
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      web3 = new Web3(App.web3Provider);
+    }
+    return App.initContract();
+  },
+
+  initContract: function() {
+    $.getJSON("Lending.json", function(lending) {
+      // Instantiate a new truffle contract from the artifact
+      App.contracts.Lending = TruffleContract(lending);
+      // Connect provider to interact with contract
+      App.contracts.Lending.setProvider(App.web3Provider);
+
+      return App.render();
+    });
+  },
+
+  render: function() {
+    var lendingInstance;
+    var loader = $("#loader");
+    var content = $("#content");
+
+    loader.hide();
+    content.show();
+    //TODO: Render content on webpage
+  },
+
+  createLoan: function() {
+      //TODO: Create and issue loan
+  },
+};
+
+$(function() {
+  $(window).load(function() {
+    App.init();
+  });
+});
+```
+>Compare what you see with the code in `index.html`. 
+
+### Creating the Loan
+For each function in our `App` object in `app.js`, we need to take an instance of the deployed Lending smart contract in order to then apply the smart contract function such as `addLoan(...)`.
+```
+    App.contracts.Lending.deployed().then(function(instance) {
+        // Call instance.addLoan(...) for example
+    });
+```
+Recall that the `addLoan(...)` function in the `Lending` contract takes the following arguments:
+* address creditor
+* address debtor
+* uint amount (in Wei)
+* uint term
+* uint interest
+
+The creditor will be the account currently logged in by the app user. We can access the account's public address with `App.account`. 
+
+> Grab the form field values and pass them as arguments into the `addLoan(...)` function:
+```
+createLoan: function() {
+    var debtor = $('#debtor').val();
+    var loanAmount = $('#loanAmount').val();
+    var loanTerm = $('#loanTerm').val();
+    var interestRate = $('#interestRate').val();
+
+    // Create the Loan
+    App.contracts.Lending.deployed().then(function(instance) {
+        return instance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
+    }).then(function(result) {
+        // For now, just show the loader while function executes
+        $("#content").hide();
+        $("#loader").show();
+    }).catch(function(err) {
+        console.error(err);
+    });
+}, 
+```
+### Rendering Lending data on webpage
+
+
+
+
+
 
 
