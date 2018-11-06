@@ -240,6 +240,91 @@ createLoan: function() {
 }, 
 ```
 ### Rendering Lending data on webpage
+Now let's complete our `render` function in `app.js`.
+```
+render: function() {
+    var lendingInstance;
+    var loader = $("#loader");
+    var content = $("#content");
+
+    loader.hide();
+    content.show();
+    //TODO: Render content on webpage
+},
+```
+>First switch the loader to `show()` and the content to `hide()` which is the correct rendering order. 
+```
+    ...
+    loader.show();
+    content.hide();
+    //TODO: Render content on webpage
+    ...
+```
+
+>Then let us add the active account's information at the bottom of the webpage in the html paragraph with id `#accountAddress`. One way to get the active account is by calling the async function `web3.eth.getCoinbase(...)` which takes in a callback using the address of the active client as the result:
+```
+    web3.eth.getCoinbase(function(err, result) {
+      if (err === null) {
+        App.account = result;
+        $("#accountAddress").html("Your Account: " + result);
+      }
+    });
+```
+>Then, we want to take an instance of the Lending contract and access the total number of Loan objects with the `loansCount` variable.
+```
+    App.contracts.Lending.deployed().then(function(instance) {
+      //Assign instance to a variable to access it in our callback
+      lendingInstance = instance;
+      return lendingInstance.loansCount();
+    }).then(function(loansCount) {
+      var loans = $("#loans");
+      loans.empty();
+
+      // Loop through each Loan object and parse its contents to display
+
+      loader.hide();
+      content.show();
+    }).catch(function(error) {
+      console.warn(error);
+    });
+```
+> Finally, fill out the loop code to iterate through each loan from the first to `loansCount`. We also only want to render the list of loans where the active user (i.e. `App.account`) is the creditor. 
+```
+    App.contracts.Lending.deployed().then(function(instance) {
+      lendingInstance = instance;
+      return lendingInstance.loansCount();
+    }).then(function(loansCount) {
+      var loans = $("#loans");
+      loans.empty();
+
+      for (var i = 1; i <= loansCount; i++) {
+        lendingInstance.loans(i).then(function(loan) {
+          if (loan[0] == App.account) {
+            var debtor = loan[1];
+            var amount = loan[2];
+            var term = loan[3];
+            var interest = loan[4];
+
+            // Render existing loans table
+            var loanTemplate = "<tr><td>" + web3.fromWei(amount, 'ether') + "</td><td>" + debtor + "</td><td>" + term + "</td><td>" + interest + "</td></tr>"
+            loans.append(loanTemplate);
+          } 
+        });
+      }
+      loader.hide();
+      content.show();
+    }).catch(function(error) {
+      console.warn(error);
+    });
+```
+That's it! Your Lending DApp is ready to go! Try to record a loan to another address. For each record, you will need to access the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). 
+
+When you switch MetaMask accounts, you should only see the existing loans where your current account is the creditor. 
+
+![Lending dashboard complete](images/Lending_Dashboard_w_txn.png)
+
+
+
 
 
 
