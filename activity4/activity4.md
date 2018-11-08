@@ -15,9 +15,9 @@ This activity will require you to use EthFiddle (ethfiddle.com) to identify secu
 > When using a blockhash, timestamp or otherm miner-defined value for randomness, keep in mind a miner has a choice of whether or not to publish a block, and thus to potentially cheat a block. 
 
 ### Re-Entrancy
-> A contract receiving Ether can call back into the initiating contract before the transaction is completing, allowing for multiple calls. For example:
+> A contract receiving Ether can call back into the initiating contract before the transaction is completed, meaning the initiating contract could be interrupted with multiple `withdraw()` calls being before the balance is updated. For example:
 ```
-    pragma solidity >=0.4.0 <0.6.0;
+    pragma solidity 0.4.18;
 
 // THIS CONTRACT CONTAINS A BUG - DO NOT USE
 contract Fund {
@@ -32,12 +32,12 @@ contract Fund {
     }
 }
 ```
-Here, the `withdraw()` function could be called multiple times before `msg.sender.send(shares[msg.sender])` completes and `shares[msg.sender]` is set to 0. However in this case, the `.send()` function inherently sets the gas limit at 2300 which is usually enough to create one event. Hence, multiple calls would fail.
+Here, the `withdraw()` function could be called multiple times before `msg.sender.send(shares[msg.sender])` completes and `shares[msg.sender]` is set to 0. However in this case, the `.send()` function inherently sets the gas limit at 2300 which is usually enough to create just one event and prevent nested `withdraw()` calls from malicious code from being made.
 
 However, using `address.call.value(...)` function allows you to set the gas limit which could allow for multiple `withdraw()` function calls:
 ```
     function withdraw() public {
-        (bool success,) = msg.sender.call.value(shares[msg.sender])("");
+        bool success = msg.sender.call.value(shares[msg.sender])("");
         if (success)
             shares[msg.sender] = 0;
     }
@@ -47,8 +47,10 @@ However, using `address.call.value(...)` function allows you to set the gas limi
 * Check - who called the function, are arguments in range, does their account have enough Ether, etc..
 * Effects - changes to the state variables
 * Interactions - any interactions with other contracts should be the very last step in any function.
+
+> Exercise - refactor the code above to follow the `Checks-Effects-Interactions` pattern.
   
-  Here's an example:
+Here's an example solution:
 ```
     function withdraw() public {
         uint share = shares[msg.sender];  // Checks the sender's account
