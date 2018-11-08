@@ -3,7 +3,7 @@
 In this activity, we will discuss some of the most common smart contract security pitfalls and how to address them.
 
 ## Exercise
-This activity will require you to:
+This activity will require you to use EthFiddle (ethfiddle.com) to identify security flaws in smart contracts, and learn how to mitigate those issues.
 
 ## Setup
 > This discussion will reference the following Solidity documentation. **Read through this in detail on your own as it contains several helpful security tips!**
@@ -58,17 +58,84 @@ However, using `address.call.value(...)` function allows you to set the gas limi
 ```
 
 ### Underflows / Overflows
-> Solidity's integer types are not actually integers - they resemble integers when the values are small, but behave differently if the numbers are large. 
 
-> For example, an `uint8` variable type in Solidity is 8 bits so the largest binary value it can hold is `11111111` or 255 in decimal. Thus if you add 1 to this, the value resets back to `00000000`. This is an example of an **overflow**. 
+>Go to <https://ethfiddle.com/> and add the following code:
+```
+pragma solidity 0.4.18;
+
+contract OverflowUnderFlowExample {
+    uint public myCurrentAccountBalance = 10;
+    uint public myDreamAccountBalance = 2**256-1;
+    
+    function buySomething(uint _cost) public {
+        myCurrentAccountBalance -= _cost;
+    }
+    
+    function receivePayment(uint _payment) public {
+        myDreamAccountBalance += _payment;
+    }
+}
+```
+> Run _Compile_ and then hit _Deploy_. This will prompt you for a wallet address to select. Keep the default and hit _Deploy_. 
+
+![EthFiddle deploy contract](images/EthFiddle_deploy_contract.png)
+
+You will then have the ability to call the public variables and functions.
+![EthFiddle functions call](images/EthFiddle_functions.png)
+
+> First call the `myCurrentAccountBalance` and `myDreamAccountBalance` to check the responses are `10` and `255` respectively. 
+
+> Then call `buySomething()` and when prompted, enter the value of 11. Call `myCurrentAccountBalance()` again. Is the response what you expected?
+
+> Similarly, call `receivePayment()` and when prompted, enter the value of 10. Call `myDreamAccountBalance()` again. Is the response what you expected?
+
+ Solidity's integer types are not actually integers - they resemble integers when the values are small, but behave differently if the numbers are large. 
+
+For example, an `uint8` variable type in Solidity is 8 bits so the largest binary value it can hold is `11111111` or 255 in decimal. Thus if you add 1 to this, the value resets back to `00000000`. This is an example of an **overflow**. 
 ```
     uint8(255) + uint8(1) == 0
 ```
->The opposite is an **underflow**:
+>The opposite is an **underflow** and in this case, an attacker might be able to spend more tokens than they have!
 ```
     uint8(0) - uint8(1) == 255  // unsigned integers cannot be negative
 ```
 > **Best Practice** - use a library like SafeMath (<https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol>) to ensure math operations account for overflows/underflows and revert on error.
+
+> Copy the following code into EthFiddle and go through the same exercise as above and see what happens when you try to over or under spend. 
+```
+pragma solidity ^0.4.18;
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+    assert(b <= a);
+    return a - b;
+  }
+
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
+    uint256 c = a + b;
+    assert(c >= a);
+    return c;
+  }
+}
+
+contract OverflowUnderFlowExample {
+    using SafeMath for uint;
+    uint public myCurrentAccountBalance = 10;
+    uint public myDreamAccountBalance = 2**256-1;
+    
+    function buySomething(uint _cost) public {
+        myCurrentAccountBalance = myCurrentAccountBalance.sub(_cost);
+    }
+    
+    function receivePayment(uint _payment) public {
+        myDreamAccountBalance = myDreamAccountBalance.add(_payment);
+    }
+}
+```
 
 ### Take Compiler Warnings Seriously!
 > **Even if you do not think that this particular warning has security implications, there might be another issue buried beneath it. Any compiler warning we issue can be silenced by slight changes to the code.**
