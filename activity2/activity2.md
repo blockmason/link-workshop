@@ -15,9 +15,9 @@ This activity will require you to:
 
 ![Create MetaMask Accounts](images/MetaMask_create_account.png)
 
-> Send some Ether to your Account 1 address using https://faucet.ropsten.be (you should receive 1 ETH).
+> Send some test Ether to your Account1 address using https://faucet.metamask.io/ (make a few requests so that your Account1 has 2 or 3 Ether). Note it will take 20-30 seconds for each transfer to complete.
 
-![Send test Ether](images/Ropsten_Eth_Faucet.png)
+![Send test Ether](images/MetaMask_ether_faucet.png)
 
 > Copy the private keys of these two accounts. **Note: In general, you should not disclose your priviate key to anyone as it can be used to steal assets held in your acocunt~**
 
