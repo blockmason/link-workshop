@@ -1,3 +1,4 @@
+
 App = {
   web3Provider: null,
   contracts: {},
@@ -27,72 +28,79 @@ App = {
       // Connect provider to interact with contract
       App.contracts.Lending.setProvider(App.web3Provider);
 
-      // App.listenForEvents();
+      App.listenForEvents();
 
       return App.render();
     });
   },
 
   // Listen for events emitted from the contract
-  // listenForEvents: function() {
-  //   App.contracts.Lending.deployed().then(function(instance) {
-  //     instance.createLoanEvent({}, {
-  //       fromBlock: 0,
-  //       toBlock: 'latest'
-  //     }).watch(function(error, event) {
-  //       console.log("event triggered", event)
-  //       // Reload when a new loan is recorded
-  //       App.render();
-  //     });
-  //   });  
-  // },
+  listenForEvents: function() {
+    App.contracts.Lending.deployed().then(function(instance) {
+      instance.createLoanEvent({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        // Reload when a new loan is recorded
+        App.render();
+      });
+    });
+  },
 
   render: function() {
     var lendingInstance;
     var loader = $("#loader");
     var content = $("#content");
 
-    loader.hide();
+    loader.show();
     content.show();
 
-    // // Load account data - display your account info on the webpage
-    // web3.eth.getCoinbase(function(err, account) {
-    //   if (err === null) {
-    //     App.account = account;
-    //     $("#accountAddress").html("Your Account: " + account);
-    //   }
-    // });
+    // Load account data - display your account info on the webpage
+    web3.eth.getCoinbase(function(err, result) {
+      if (err === null) {
+        App.account = result;
+        $("#accountAddress").html("Your Account: " + result);
+      }
+    });
 
-    // // Load contract data
-    // App.contracts.Lending.deployed().then(function(instance) {
-    //   lendingInstance = instance;
-    //   return lendingInstance.loansCount();
-    // }).then(function(loansCount) {
-    //   var loans = $("#loans");
-    //   loans.empty();
+    // Load contract data
+    App.contracts.Lending.deployed().then(function(instance) {
+      lendingInstance = instance;
+      return lendingInstance.loansCount();
+    }).then(function(loansCount) {
+      var loanString = '';
+      var promises = [];
 
-    //   for (var i = 1; i <= loansCount; i++) {
-    //     lendingInstance.loans(i).then(function(loan) {
-    //       if (loan[0] == App.account) {
-    //         var debtor = loan[1];
-    //         var amount = loan[2];
-    //         var term = loan[3];
-    //         var interest = loan[4];
+      for (var i = 1; i <= loansCount; i++) {
+        promises.push(lendingInstance.loans(i));
+      }
 
-    //         // Render existing loans table
-    //         var loanTemplate = "<tr><td>" + web3.fromWei(amount, 'ether') + "</td><td>" + debtor + "</td><td>" + term + "</td><td>" + interest + "</td></tr>"
-    //         loans.append(loanTemplate);
-    //       } 
-    //     });
-    //   }
-    //   loader.hide();
-    //   content.show();
-    // }).catch(function(error) {
-    //   console.warn(error);
-    // });
+      Promise.all(promises).then(function(loans){
+        loans.forEach(function(loan, i) {
+          if (loan[0] == App.account) {
+            var loanID = i + 1;
+          var debtor = loan[1];
+          var amount = loan[2];
+          var term = loan[3];
+          var interest = loan[4];
+          var loanIssued = loan[5];
+
+          // Render existing loans table
+          loanString += ("<tr><td>" + loanID + "</td><td>" + web3.fromWei(amount, 'ether') + "</td><td>" + debtor + "</td><td>" + term + "</td><td>" + interest + "</td></tr>");
+          }
+        });
+
+        $('#loans').html(loanString);
+      });
+      loader.hide();
+      content.show();
+    }).catch(function(error) {
+      console.warn(error);
+    });
   },
 
   createLoan: function() {
+    var lendingInstance;
     var debtor = $('#debtor').val();
     var loanAmount = $('#loanAmount').val();
     var loanTerm = $('#loanTerm').val();
@@ -100,26 +108,30 @@ App = {
     
     // Create the Loan
     App.contracts.Lending.deployed().then(function(instance) {
-      return instance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
-    }).then(function(result) {
-      $("#content").hide();
-      $("#loader").show();
+      lendingInstance = instance;
+      return lendingInstance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
     }).catch(function(err) {
       console.error(err);
     });
   },
 
-  // issueLoan: function(receiver, amount) {
-  //   web3.eth.sendTransaction({
-  //     from: App.account,
-  //     to: receiver,
-  //     value: web3.toWei(amount, 'ether')
-  //   }).then(function(txHash) {
-  //     console.log(txHash);
-  //   }).catch(function(err) {
-  //     console.error(err);
-  //   });
-  // },
+  // This function is an example of using the 'async-await` approach to deal with promises
+  issueLoan: async function() {
+    var loanID = $('#issueLoan').val();
+    
+    // Retrieve the loan
+    ins = await App.contracts.Lending.deployed();
+    loan = await ins.loans(loanID);
+    web3.eth.sendTransaction({
+        from: loan[0],
+        to: loan[1],
+        value: loan[2]
+      }, function(err, txnHash) {
+        if (!err) {
+          console.log('txnHash is ' + txnHash);
+        }
+      });
+  },
 };
 
 $(function() {

@@ -319,9 +319,10 @@ render: function() {
 ```
 That's it! Your Lending DApp is ready to go! Try to record a loan to another address. For each record, you will need to access the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). 
 
-When you switch MetaMask accounts, you should only see the existing loans where your current account is the creditor. 
+When you switch MetaMask accounts, you should only see the existing loans where your current account is the 'creditor'.
 
 ![Lending dashboard complete](images/Lending_Dashboard_w_txn.png)
+
 
 
 

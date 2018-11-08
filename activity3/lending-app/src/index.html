@@ -27,6 +27,7 @@
                 <table class="table">
                 <thead>
                   <tr>
+                    <th scope="col">Loan ID</th>
                     <th scope="col">Amount (ETH)</th>
                     <th scope="col">Loaned To</th>
                     <th scope="col">Term (Months)</th>
@@ -37,7 +38,7 @@
                 </tbody>
               </table>
               <hr/>
-              <h3>Issue Loan</h3>
+              <h3>Record Loan</h3>
               <br/>
               <form onSubmit="App.createLoan()">
                 <div class="form-group">
@@ -61,11 +62,19 @@
                   <label for="interestRate">Interest Rate (%)</label>
                   <input type="number" class="form-control" id="interestRate">
                 </div>
-                <button type="submit" class="btn btn-primary">Lend Now</button>
+                <button type="submit" class="btn btn-primary">Record Loan</button>
                 <hr />
               </form>
+              <h3>Issue Loan</h3>
+              <br/>
+              <form onSubmit="App.issueLoan()">
+                <div class="form-group">
+                  <label for="issueLoan">Loan ID </label>
+                  <input type="number" class="form-control" id="issueLoan">
+                </div>
+                <button type="submit" class="btn btn-primary">Issue Loan</button>
+              </form>
               <p id="accountAddress" class="text-center"></p>
-              <!-- <p id="txnResult" class="text-center"></p> -->
             </div>
           </div>
         </div>
