@@ -5,14 +5,20 @@ In this activity, we will deploy our lending Smart Contract from the previous ac
 ## Exercise
 This activity will require you to:
 * Use Truffle's `HDWalletProvider` and Infura (https://infura.io) to deploy your smart contract to the public `ROPSTEN` test network
-* Use the specialized `ethereumjs-tx` library(https://github.com/ethereumjs/ethereumjs-tx/blob/master/docs/index.md) as in Activity 2 to build, sign and broadcast an ETH transaction issued by the front-end DApp.
+* Use `web3.eth.sendTransaction` as in Activity 1 to send Ether from our web DApp.
 
 ### Setup
 > You will need to install Truffle's `HDWalletProvider` and configure it in your `truffle.js` file. Installaction and configuration instructions can be found here: https://truffleframework.com/tutorials/using-infura-custom-provider#configure-your-truffle-project. Remember to do this in your `lending-app` folder. Note: you will also need your Infura Ropsten API key/token again.
+
+> In your Terminal, create an environment variable for your account's mnenomic that you get from your Rosten MetaMask account. **Note** - you can find the mnenomic from your account Settings -> Reveal Seed Words.
+```
+    export MNEMONIC='your account mnemonic'
+```
+
 > Your Ropsten network definition in `truffle.js` should look something like this:
 ```
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = "account mnemonic words here..."; // In practice, DON'T do this! As we did in Activity 2, save your mnemonic as an environment variable and retrive using 'process.env.mnemoni' for example. 
+var mnemonic = process.env.MNEMONIC; //  
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -77,7 +83,9 @@ Saving artifacts...
 
 ![Ropsten loans dashboard with transaction](images/Ropsten_loans_dashboard.png)
 
->Now try to issue the loan using `Loan ID = 1`. Does this work? Why or why not?
+>Now try to issue the loan using `Loan ID = 1`. You should see a similar MetaMask notification asking you to confirm the Ether transaction and corresponding gas fees. After ~30 seconds, you should see a transaction confirmation and the Ether amount removed from the current (creditor) account and send to the debtor account.
 
-Remember that when we ran our Lending DApp with a local blockchain, the accounts we used were **unlocked**. When trying to send Ether using locked MetaMask accounts over a public test network like Ropsten, we need to build, sign and broadcast our transaction as we did in Activity 2. 
+**Congratulations!** You have successfully run your Lending DApp and executed transactions on the public Ropsten test network!
+
+
 

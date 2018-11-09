@@ -120,8 +120,9 @@ App = {
     var loanID = $('#issueLoan').val();
     
     // Retrieve the loan
-    ins = await App.contracts.Lending.deployed();
-    loan = await ins.loans(loanID);
+    const ins = await App.contracts.Lending.deployed();
+    const loan = await ins.loans(loanID);
+
     web3.eth.sendTransaction({
         from: loan[0],
         to: loan[1],
