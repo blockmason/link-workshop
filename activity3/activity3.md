@@ -1,6 +1,6 @@
-# Create, deploy, and interact with a basic Smart Contract with a front-end web app
+# Create, deploy, and interact with a basic Smart Contract with a front-end web DApp
 ## Goal
-In this activity, we will program a basic Smart Contract, deploy it to a test network, and interact with it using a basic front-end. 
+In this activity, we will program a basic Smart Contract, deploy it to a local network and interact with it using a basic front-end. 
 
 ## Exercise
 This activity will require you to:

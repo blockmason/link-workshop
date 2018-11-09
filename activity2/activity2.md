@@ -25,9 +25,9 @@ This activity will require you to:
 
 > And export them to local environment variables
 ```
-    export PK_ACCOUNT_1 = 'paste your account 1 private key'
+    export PK_ACCOUNT_1='paste your account 1 private key'
 
-    export PK_ACCOUNT_2 = 'paste your account 2 private key'
+    export PK_ACCOUNT_2='paste your account 2 private key'
 ```
 
 > Install the `ethereumjs-tx` (https://github.com/ethereumjs/ethereumjs-tx) library
