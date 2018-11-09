@@ -66,4 +66,18 @@ Saving artifacts...
 
 **Great work!** You have successfully deployed your Lending smart contract on the public Ropsten test network!
 
+### Run your Lending DApp
+>There isn't anything in your code that you need to change to run your web DApp as MetaMask will inject the correct web3 provider. Run the `lite-server` again from your Terminal with:
+```
+    npm run dev
+```
+>Now open up MetaMask and ensure the `Ropsten Test Network` is selected. Then try to record a loan with Account1 as the creditor and Account2 as the debtor receiving the loan. 
+
+>You should get a similar MetaMask notification asking you to confirm the gas fees and after ~30 seconds, you should see a transaction confirmation and the loan appear on your Loans Dashboard.
+
+![Ropsten loans dashboard with transaction](images/Ropsten_loans_dashboard.png)
+
+>Now try to issue the loan using `Loan ID = 1`. Does this work? Why or why not?
+
+Remember that when we ran our Lending DApp with a local blockchain, the accounts we used were **unlocked**. When trying to send Ether using locked MetaMask accounts over a public test network like Ropsten, we need to build, sign and broadcast our transaction as we did in Activity 2. 
 
