@@ -19,15 +19,13 @@ This activity will require you to:
 
 ![Send test Ether](images/MetaMask_ether_faucet.png)
 
-> Copy the private keys of these two accounts. **Note: In general, you should not disclose your priviate key to anyone as it can be used to steal assets held in your acocunt~**
+> Copy the private keys of the first account. **Note: In general, you should not disclose your priviate key to anyone as it can be used to steal assets held in your acocunt~**
 
 ![Copy MetaMask private keys](images/MetaMask_access_private_keys.png)
 
 > And export them to local environment variables
 ```
     export PK_ACCOUNT_1='paste your account 1 private key'
-
-    export PK_ACCOUNT_2='paste your account 2 private key'
 ```
 
 > Install the `ethereumjs-tx` (https://github.com/ethereumjs/ethereumjs-tx) library
@@ -65,7 +63,6 @@ When using the `ethereumjs-tx` library, the `sign()` function takes a private ke
 > Add the following to `signedTransaction.js`:
 ```
     const privateKey1 = Buffer.from(process.env.PK_ACCOUNT_1, 'hex')
-    const privateKey2 = Buffer.from(process.env.PK_ACCOUNT_2, 'hex')
 ```
 
 ### Build the Transaction
