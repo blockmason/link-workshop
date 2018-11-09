@@ -1,6 +1,6 @@
 # Building, signing and broadcasting an Ethereum transaction
 ## Goal
-In this activity, we will build, sign and broadcast an ETH transfer transaction to a public test network.
+In this activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain without running your own Ethereum node or using a wallet or browser extension like MetaMask (e.g. from a mobile DApp). 
 
 ## Exercise
 This activity will require you to:
@@ -11,7 +11,7 @@ This activity will require you to:
 * Validate that the transaction has been broadcasted publicly at ropsten.etherscan.io
 
 ### Setup
-> Download the MetaMask browser extension and setup 2 accounts.
+> Download the MetaMask browser extension and setup 2 accounts. We are only using MetaMask for the public/private account keys for this actviity.
 
 ![Create MetaMask Accounts](images/MetaMask_create_account.png)
 
