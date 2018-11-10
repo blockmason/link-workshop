@@ -1,11 +1,11 @@
-# Create, deploy, and interact with a basic Smart Contract with a front-end web DApp
+# Create, deploy, and interact with a basic Smart Contract through a web DApp
 ## Goal
 In this activity, we will program a basic Smart Contract, deploy it to a local network and interact with it using a basic front-end. 
 
 ## Exercise
 This activity will require you to:
 * Use Solidity to write a basic smart contract to record a loan
-* Use web3js to interact between a local blockchain network and a web front-end
+* Use web3.js to interact between a local blockchain network and a web front-end
 * Use HTML and JavaScript for the front-end web application
 
 ### Setup
@@ -181,9 +181,9 @@ App = {
   },
 
   render: function() {
-    var lendingInstance;
-    var loader = $("#loader");
-    var content = $("#content");
+    let lendingInstance;
+    const loader = $("#loader");
+    const content = $("#content");
 
     loader.hide();
     content.show();
@@ -191,8 +191,12 @@ App = {
   },
 
   createLoan: function() {
-      //TODO: Create and issue loan
+      //TODO: Create the loan
   },
+
+  issueLoan: function() {
+      //TODO: Issue the loan by transferring ETH
+  }
 };
 
 $(function() {
@@ -201,10 +205,10 @@ $(function() {
   });
 });
 ```
->Compare what you see with the code in `index.html`. 
+>Compare what you see here in `app.js` with the code in `index.html`. 
 
-### Creating the Loan
-For each function in our `App` object in `app.js`, we need to take an instance of the deployed Lending smart contract in order to then apply the smart contract function such as `addLoan(...)`.
+### Create the Loan
+For each function in our `App` object in `app.js`, we need to take an instance of the deployed Lending smart contract in order to then apply a smart contract function such as `addLoan(...)`.
 ```
     App.contracts.Lending.deployed().then(function(instance) {
         // Call instance.addLoan(...) for example
@@ -222,30 +226,53 @@ The creditor will be the account currently logged in by the app user. We can acc
 > Grab the form field values and pass them as arguments into the `addLoan(...)` function:
 ```
 createLoan: function() {
-    var debtor = $('#debtor').val();
-    var loanAmount = $('#loanAmount').val();
-    var loanTerm = $('#loanTerm').val();
-    var interestRate = $('#interestRate').val();
+    const debtor = $('#debtor').val();
+    const loanAmount = $('#loanAmount').val();
+    const loanTerm = $('#loanTerm').val();
+    const interestRate = $('#interestRate').val();
 
     // Create the Loan
     App.contracts.Lending.deployed().then(function(instance) {
         return instance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
-    }).then(function(result) {
-        // For now, just show the loader while function executes
-        $("#content").hide();
-        $("#loader").show();
     }).catch(function(err) {
         console.error(err);
     });
 }, 
 ```
-### Rendering Lending data on webpage
+### Issue the Loan
+Recall in Activity 1 we used `web3.eth.sendTransaction(...)`function to transfer ETH. We will do the same here. 
+
+**Note:** Because will be using our local (i.e. unlocked) blockchain, and later MetaMask which holds our account private keys to sign transactions, we can use `web3.eth.sendTransaction(...)`. However, if we do not use MetaMask's injected web3 instance and we still want to transact over the Ethereum testnet or mainnet, we will need to build, sign and broadcast our transaction as we did in Activity 2. 
+
+> Instead of using `.then(function(...))` to resolve our Promise and execute our callback as we did in `createLoan()`, we will use the `async/await` special syntax in JavaScript EC6 (https://javascript.info/async-await) to deal with Promises without creating long Promise chains:  
+```
+    issueLoan: async function() {
+    const loanID = $('#issueLoan').val();
+    
+    // Retrieve the loan
+    const ins = await App.contracts.Lending.deployed();
+    const loan = await ins.loans(loanID);
+
+    web3.eth.sendTransaction({
+        from: loan[0],
+        to: loan[1],
+        value: loan[2]
+      }, function(err, txnHash) {
+        if (!err) {
+          console.log('txnHash is ' + txnHash);
+        }
+      });
+  },
+```
+> Compare and contrast the `Promise.then(function(err, result) {...})` approach with using `async/await`. 
+
+### Render Lending data on webpage
 Now let's complete our `render` function in `app.js`.
 ```
 render: function() {
-    var lendingInstance;
-    var loader = $("#loader");
-    var content = $("#content");
+    let lendingInstance; 
+    const loader = $("#loader");
+    const content = $("#content");
 
     loader.hide();
     content.show();
@@ -273,14 +300,16 @@ render: function() {
 >Then, we want to take an instance of the Lending contract and access the total number of Loan objects with the `loansCount` variable.
 ```
     App.contracts.Lending.deployed().then(function(instance) {
-      //Assign instance to a variable to access it in our callback
+      //Assign instance to a variable to access it later in our callback
       lendingInstance = instance;
       return lendingInstance.loansCount();
     }).then(function(loansCount) {
-      var loans = $("#loans");
-      loans.empty();
+      let loanString = '';
+      let promises = [];
 
-      // Loop through each Loan object and parse its contents to display
+      // Loop through to retrieve each Loan object. Remember we will only get back a Promise, not the actual object.
+
+      // Extact each Loan object after the Promise resolves and render the `loanString`.
 
       loader.hide();
       content.show();
@@ -288,40 +317,59 @@ render: function() {
       console.warn(error);
     });
 ```
-> Finally, fill out the loop code to iterate through each loan from the first to `loansCount`. We also only want to render the list of loans where the active user (i.e. `App.account`) is the creditor. 
+> Then, fill out the loop code to iterate through each loan Promise from the first to `loansCount` and place the Promise in the `promises` array. 
+```
+ ...
+
+    for (let i = 1; i <= loansCount; i++) {
+        promises.push(lendingInstance.loans(i));
+    }
+
+    // Extact each Loan object after the Promise resolves and render the `loanString`.
+
+```
+> Finally, resolve all the Promises and then loop through and extract each Loan object. We also only want to render the list of loans where the active user (i.e. `App.account`) is the creditor. 
 ```
     App.contracts.Lending.deployed().then(function(instance) {
       lendingInstance = instance;
       return lendingInstance.loansCount();
     }).then(function(loansCount) {
-      var loans = $("#loans");
-      loans.empty();
+      let loanString = '';
+      let promises = [];
 
-      for (var i = 1; i <= loansCount; i++) {
-        lendingInstance.loans(i).then(function(loan) {
-          if (loan[0] == App.account) {
-            var debtor = loan[1];
-            var amount = loan[2];
-            var term = loan[3];
-            var interest = loan[4];
-
-            // Render existing loans table
-            var loanTemplate = "<tr><td>" + web3.fromWei(amount, 'ether') + "</td><td>" + debtor + "</td><td>" + term + "</td><td>" + interest + "</td></tr>"
-            loans.append(loanTemplate);
-          } 
-        });
+      for (let i = 1; i <= loansCount; i++) {
+        promises.push(lendingInstance.loans(i));
       }
+
+      Promise.all(promises).then(function(loans){
+        loans.forEach(function(loan, i) {
+          if (loan[0] == App.account) {
+            let loanID = i + 1;
+            let debtor = loan[1];
+            let amount = loan[2];
+            let term = loan[3];
+            let interest = loan[4];
+
+          // Render existing loans table
+          loanString += ("<tr><td>" + loanID + "</td><td>" + web3.fromWei(amount, 'ether') + "</td><td>" + debtor + "</td><td>" + term + "</td><td>" + interest + "</td></tr>");
+          }
+        });
+
+        $('#loans').html(loanString);
+      });
       loader.hide();
       content.show();
     }).catch(function(error) {
       console.warn(error);
     });
 ```
-That's it! Your Lending DApp is ready to go! Try to record a loan to another address. For each record, you will need to access the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). 
+That's it! Your Lending DApp is ready to go! Try to record a loan to another address. For each record, you will need to accept the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). 
 
 When you switch MetaMask accounts, you should only see the existing loans where your current account is the 'creditor'.
 
-![Lending dashboard complete](images/Lending_Dashboard_w_txn.png)
+Then try and formally 'issue' a loan by using the Loan ID. As above, for each ETH transfer, you will need to approve the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). If loan amount is more than the amount of ETH you have in your account, you'll get an _Insufficient Funds_ error message.
+
+![Lending dashboard complete](images/Lending_Dashboard_w_loan_txn.png)
 
 
 

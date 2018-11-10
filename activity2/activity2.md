@@ -1,21 +1,35 @@
 # Building, signing and broadcasting an Ethereum transaction
 ## Goal
-In this activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain without running your own Ethereum node or using a wallet or browser extension like MetaMask (e.g. from a mobile DApp). 
+In this activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain **without** running your own Ethereum node or using a wallet or browser extension like MetaMask (e.g. for a mobile DApp). This activity will give you a feel for what is happening 'under-the-hood' when creating an Ethereum transaction. 
 
 ## Exercise
 This activity will require you to:
 * Use the specialized `ethereumjs-tx` library (https://github.com/ethereumjs/ethereumjs-tx/blob/master/docs/index.md) to create a transaction object.
-* Interact with the `ROPSTEN` Ethereum test network
-* Interact with MetaMask - a browser extension for accessing Ethereum based decentralized applications
-* Build, sign and broadcast an ETH transfer transaction on the `ROPSTEN` test network
-* Validate that the transaction has been broadcasted publicly at ropsten.etherscan.io
+* Interact with the `Ropsten` Ethereum test network
+* Interact with MetaMask - a browser extension for accessing Ethereum based decentralized applications - only for getting test accounts and ETH setup. 
+* Build, sign and broadcast an ETH transfer transaction on the `Ropsten` test network
+* Validate that the transaction has been broadcasted publicly at https://ropsten.etherscan.io
 
 ### Setup
-> Download the MetaMask browser extension and setup 2 accounts. We are only using MetaMask for the public/private account keys for this actviity.
+> Download the MetaMask browser extension and setup 2 accounts. We are only using MetaMask for the public/private account keys and to obtain some test ETH for this actviity.
 
 ![Create MetaMask Accounts](images/MetaMask_create_account.png)
 
-> Send some test Ether to your Account1 address using https://faucet.metamask.io/ (make a few requests so that your Account1 has 2 or 3 Ether). Note it will take 20-30 seconds for each transfer to complete.
+You could also create test accounts locally by using web3 in Node. For example:
+```
+    > const Web3 = require('web3')
+    > const web3 = new Web3("https://ropsten.infura.io/v3/<Your API Key>")
+    > web3.eth.accounts.create()
+{ address: '0x24D987cFeB1feD05fDD5187eCeE3AF15b7Baf708',
+  privateKey:
+   '0x2eaa2f9297813d3eac5fc137d27c11dba84afbfdbd42477eb311843ee76236f5',
+  signTransaction: [Function: signTransaction],
+  sign: [Function: sign],
+  encrypt: [Function: encrypt] 
+}
+```
+
+> Send some test ETH to your Account1 address using https://faucet.metamask.io/ (make a few requests so that your Account1 has 2 or 3 Ether). Note it will take 20-30 seconds for each transfer to complete.
 
 ![Send test Ether](images/MetaMask_ether_faucet.png)
 
@@ -33,7 +47,7 @@ This activity will require you to:
     npm install ethereumjs-tx
 ```
 
-> Obtain your `ROPSTEN` test network API url. For example: `https://ropsten.infura.io/v3/182b941b70e6443b8854cc53786a3007`
+> Obtain your `Ropsten` test network API url. For example: `https://ropsten.infura.io/v3/182b941b70e6443b8854cc53786a3007`
 
 > Create a file called `signedTransaction.js` and start by defining the following variables:
 ```

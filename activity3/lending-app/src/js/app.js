@@ -48,12 +48,12 @@ App = {
   },
 
   render: function() {
-    var lendingInstance;
-    var loader = $("#loader");
-    var content = $("#content");
+    let lendingInstance;
+    const loader = $("#loader");
+    const content = $("#content");
 
     loader.show();
-    content.show();
+    content.hide();
 
     // Load account data - display your account info on the webpage
     web3.eth.getCoinbase(function(err, result) {
@@ -68,22 +68,21 @@ App = {
       lendingInstance = instance;
       return lendingInstance.loansCount();
     }).then(function(loansCount) {
-      var loanString = '';
-      var promises = [];
+      let loanString = '';
+      let promises = [];
 
-      for (var i = 1; i <= loansCount; i++) {
+      for (let i = 1; i <= loansCount; i++) {
         promises.push(lendingInstance.loans(i));
       }
 
       Promise.all(promises).then(function(loans){
         loans.forEach(function(loan, i) {
           if (loan[0] == App.account) {
-            var loanID = i + 1;
-          var debtor = loan[1];
-          var amount = loan[2];
-          var term = loan[3];
-          var interest = loan[4];
-          var loanIssued = loan[5];
+            let loanID = i + 1;
+            let debtor = loan[1];
+            let amount = loan[2];
+            let term = loan[3];
+            let interest = loan[4];
 
           // Render existing loans table
           loanString += ("<tr><td>" + loanID + "</td><td>" + web3.fromWei(amount, 'ether') + "</td><td>" + debtor + "</td><td>" + term + "</td><td>" + interest + "</td></tr>");
@@ -100,16 +99,14 @@ App = {
   },
 
   createLoan: function() {
-    var lendingInstance;
-    var debtor = $('#debtor').val();
-    var loanAmount = $('#loanAmount').val();
-    var loanTerm = $('#loanTerm').val();
-    var interestRate = $('#interestRate').val();
+    const debtor = $('#debtor').val();
+    const loanAmount = $('#loanAmount').val();
+    const loanTerm = $('#loanTerm').val();
+    const interestRate = $('#interestRate').val();
     
     // Create the Loan
     App.contracts.Lending.deployed().then(function(instance) {
-      lendingInstance = instance;
-      return lendingInstance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
+      instance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
     }).catch(function(err) {
       console.error(err);
     });
@@ -117,7 +114,7 @@ App = {
 
   // This function is an example of using the 'async-await` approach to deal with promises
   issueLoan: async function() {
-    var loanID = $('#issueLoan').val();
+    const loanID = $('#issueLoan').val();
     
     // Retrieve the loan
     const ins = await App.contracts.Lending.deployed();

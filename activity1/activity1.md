@@ -14,7 +14,7 @@ This activity will require you to:
 ```
     npm install web3 
 ```
-> Open up Ganache. By default, the blockchain runs on `http://127.0.0.1:7545`.
+> Open up Ganache. By default, your local blockchain will run on `http://127.0.0.1:7545`.
    
 > Run node from your Terminal window: 
 ```
