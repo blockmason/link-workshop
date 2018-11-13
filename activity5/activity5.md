@@ -66,21 +66,21 @@ The Lending contract address in this case is `0xc980b32ed01fac955520f390fde00518
 ### App Setup
 > In Link, create a new App called `lending-app` and copy the `Contract Address` and `Contract ABI` including the square brackets `[]`. You can also add in a description. 
 
-![Link App Setup](activity5/images/Link_App_setup.png)
+![Link App Setup](images/Link_App_setup.png)
 
 This creates an app with 3 functions:
 
-![Link App Functions](activity5/images/Link_App_functions.png)
+![Link App Functions](images/Link_App_functions.png)
 
 The first function is the `addLoan(...)` which takes in 5 parameters. Next we have the `loans` array which takes in a Loan ID parameter to retrive a Loan object. Finally, we have the `loansCount` variable which does not take in any parameters. 
 
 ### Consumers Setup
 In Link, _consumers_ represent front-end apps, individuals or anything that will transact with the smart contract on the network. For this activity, create a `Lender app front-end` consumer which will be provided with a **Funding Address**. 
 
-![Link Consumer Setup](activity5/images/Link_Consumer_setup.png)
+![Link Consumer Setup](images/Link_Consumer_setup.png)
 
 > Now this Funding Address needs some test ETH. Open up your MetaMask Account 1 on the Ropsten Test Network and transfer some ETH to your new Funding Address.
 
-![Link MetaMask Funding](activity5/images/Link_MetaMask_Funding.png)
+![Link MetaMask Funding](images/Link_MetaMask_Funding.png)
 
 ### Constructing the API Request
