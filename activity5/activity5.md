@@ -83,4 +83,93 @@ In Link, _consumers_ represent front-end apps, individuals or anything that will
 
 ![Link MetaMask Funding](images/Link_MetaMask_Funding.png)
 
+### Blockmason Link API documentation
+> The API documentation can be found here: https://mason.link/api/
+
 ### Constructing the API Request
+Each consumer in Link will have a _**Consumer Access Token**_ to be used when making requests. Think of this token as the API key which you will need to send as part of the `access_token` request query parameter. 
+
+> Here's an example of a cURL POST request to the endpoint `lending-app/loansCount`.  Note: Pipe the response into a json formatter like `python json.tool`:
+```
+curl -X POST -H 'Content-Type: application/json' 'https://api.block.mason.link/@harish/lending-app/loansCount?access_token=gyObHEUPNPDJm2VgY9tDHI23c-mrSr5KdHBUvgOxSJaI' | python -m json.tool
+```
+And here is the `CreateInvocationResponse` object that is returned:
+```
+{
+    "data": {
+        "attributes": {
+            "createdAt": "2018-11-14T01:29:22.684Z",
+            "inputs": {},
+            "isRejected": false,
+            "isResolved": false
+        },
+        "id": "86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0",
+        "relationships": {
+            "function": {
+                "data": {
+                    "id": "DyNsZFQsxP87TaiYIT4DdmDB-fta3CjJbYytiDEdDAA",
+                    "type": "function"
+                }
+            },
+            "owner": {
+                "data": {
+                    "id": "66ec4soxCaPD8d05jJKO_pSSsKT6qd_N-gxg-jRQ-IM",
+                    "type": "consumer"
+                }
+            }
+        },
+        "type": "invocation"
+    },
+    "jsonapi": "1.0",
+    "meta": {
+        "name": "@blockmason/link-api",
+        "version": "0.6.3"
+    }
+}
+```
+Because we are making transaction requests to a remote network (Ropsten in this case), we essentially get back an object containing an _invocation_ id that we can use to make a follow-up GET request for the result. Think of it as somewhat like a process with a ticketing system - you make a request to get the latest `loansCount` value, receive a ticket,and then poll the system with the ticket ID to get the value. From the above reponse, the invocation id is `86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0`. 
+
+> We then make a follow-up GET request using the invocation id (and the access token): 
+```
+curl 'https://api.block.mason.link/invocations/86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0?access_token=gyObHEUPNPDJm2VgY9tDHI23c-mrSr5KdHBUvgOxSJaI' | python -m json.tool
+```
+And the output object looks like:
+```
+{
+    "data": {
+        "attributes": {
+            "createdAt": "2018-11-14T01:02:55.023Z",
+            "inputs": {},
+            "isRejected": false,
+            "isResolved": true,
+            "outputs": [
+                1
+            ]
+        },
+        "relationships": {
+            "function": {
+                "data": {
+                    "id": "DyNsZFQsxP87TaiYIT4DdmDB-fta3CjJbYytiDEdDAA",
+                    "type": "function"
+                }
+            },
+            "owner": {
+                "data": {
+                    "id": "66ec4soxCaPD8d05jJKO_pSSsKT6qd_N-gxg-jRQ-IM",
+                    "type": "consumer"
+                }
+            }
+        },
+        "id": "86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0",
+        "type": "invocation"
+    },
+    "jsonapi": "1.0",
+    "meta": {
+        "name": "@blockmason/link-api",
+        "version": "0.6.3"
+    }
+}
+```
+The data we want is in `data["attributes"]["outputs"][0]` which has the value `1`. 
+
+
