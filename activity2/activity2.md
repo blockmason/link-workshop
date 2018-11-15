@@ -49,7 +49,13 @@ Notice in our `package.json` that we have `lite-server` installed under the `dev
 ```
 > Now direct your browser to `http://localhost:3000` to see the App up and running!
 
-### app.js code
+### Our index.html
+Key things to notice in our basic index.html are:
+1. Our form which, on submit, triggers the `sendMoney()` function from `app.js`
+2. There are 2 form fields: 1) Receiver Address and 2) amount in ETH
+3. A paragraph HTML element with an id attribute of `accountAddress`. This is where the address of the current active account using the App will be presented.
+
+### Our app.js code
 The code in `app.js` should look like this:
 ```
 App = {
@@ -90,16 +96,60 @@ $(function() {
   });
 });
 ```
-The first thing to note is the `initWeb3` function which defines the web3 instance to be used by our DApp. When we launch MetaMask, it injects an instance of Web3 into the app running in the browser. If MetaMask is not active, the web3 instance will be our local one. 
+The first thing to note is the `initWeb3` function which defines the web3 instance to be used by our DApp. When we launch MetaMask, it injects an instance of Web3 into the app running in the browser. If MetaMask is not active, the web3 provider will be our local one. 
 
 For our simple DApp, we will:
 1. Show the current active MetaMask account address on the webpage
 2. Have a basic form with the receiver address and the amount of ETH to be transferred as inputs. 
 
-### 
+### Show the current active MetaMask account on webpage
+One way to get the current active account (i.e. the account which will be charged the gas transaction fees or, in the case of a miner address, the adddres to which mining rewards go) by using the `web3.eth.getCoinbase()` function (https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethcoinbase). The function takes in a callback with the result being the active MetaMask account address.
 
+> Your `showActiveAccount()` function should look similar to:
+```
+showActiveAccount: function() {
+    web3.eth.getCoinbase(function(err, result) {
+      if (err === null) {
+        App.account = result;
+        $("#accountAddress").html("Your Account: " + result);
+      }
+    });  
+},
+```
+Note: we store the `result` in our `App` object with `App.account = result;` so that we could use this active address later if needed.
 
-### Setup to use the Ropsten Test Network
+### Our sendMoney function
+The key feature of this app is to send a specified amount of ETH from the current address to a specified receiver. Recall how we did this at the end of Activity 1 by using the `web3.eth.sendTransaction({})` function.  
+
+> Your `sendMoney()` function should look similar to:
+```
+sendMoney: function() {
+    const receiver = $('#receiver').val();
+    const amount = $('#amount').val();
+
+    web3.eth.sendTransaction({
+        from: App.account,
+        to: receiver,
+        value: web3.toWei(amount, 'ether')
+      }, function(err, txnHash) {
+        if (!err) {
+          console.log('txnHash is ' + txnHash);
+        }
+    });
+},
+```
+
+> Question: In Activity 1, we converted the value to Wei using the function `web3.utils.toWei(..)`. Why are we using `web3.toWei(..)` here?
+
+> Now go back to http://localhost:3000 where your Simple App is running and try to send ETh to another address. What happens with MetaMask?
+
+> Confirm that the funds have been sent by looking at the account balances in Ganache
+
+**Congratulations!** You have successfully created a basic DApp that uses the MetaMask browser extension to send ETH between 2 local accounts!
+
+Now how do we do this with the public Ropsten Test Network?
+
+### Using the Ropsten Test Network
 
 ![Create MetaMask Accounts](images/MetaMask_create_account.png)
 
@@ -110,3 +160,7 @@ For our simple DApp, we will:
 ![Send test Ether](images/MetaMask_ether_faucet.png)
 
 Recall the reason we need to do this is because any transaction recorded on the Ethereum blockchain requires a gas fee to complete the transaction. 
+
+> Now run your DApp server again (if you stopped it) and browse to https://localhost:3000. Send some ETH between your accounts. 
+
+> Verify the transaction both in your MetaMask wallet and on Etherscan (https://ropsten.etherscan.io/). Search for your transaction hash. What transaction details do you see?
