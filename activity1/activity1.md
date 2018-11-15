@@ -1,6 +1,6 @@
 # Introduction to web3 and Ethereum
 ## Goal
-In this activity, we will read basic account information from local and public blockchains and write a basic transfer of the ether (ETH) cryptocurrency locally.
+In this activity, we will read basic account information from both local and public blockchains and execute a basic transfer of the ether (ETH) cryptocurrency locally using the node.js (server side) command line. 
 
 ## Exercise
 This activity will require you to:
