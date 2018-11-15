@@ -1,14 +1,16 @@
-# Deploy and interact with your Lending DApp on a public test network
+# Deploy and interact with your Lending app on a public test network
 ## Goal
-In this activity, we will deploy our lending Smart Contract from the previous activity to the public Ropsten network and interact with it using our web DApp. 
+In this activity, we will deploy our lending smart contract from the previous activity to the public Ropsten network and interact with it using our web app. 
 
 ## Exercise
 This activity will require you to:
-* Use Truffle's `HDWalletProvider` and Infura (https://infura.io) to deploy your smart contract to the public `ROPSTEN` test network
-* Use `web3.eth.sendTransaction` as in Activity 1 to send Ether from our web DApp.
+* Use Truffle's `HDWalletProvider` and Infura (https://infura.io) to deploy your smart contract to the public `Ropsten` test network
+* Use `web3.eth.sendTransaction` as in Activity 2 to send ETH using our web app.
 
 ### Setup
-> You will need to install Truffle's `HDWalletProvider` and configure it in your `truffle.js` file. Installaction and configuration instructions can be found here: https://truffleframework.com/tutorials/using-infura-custom-provider#configure-your-truffle-project. Remember to do this in your `lending-app` folder. Note: you will also need your Infura Ropsten API key/token again.
+> You will need to install Truffle's `HDWalletProvider` and configure it in your `truffle.js` file. Installaction and configuration instructions can be found here: https://truffleframework.com/tutorials/using-infura-custom-provider#configure-your-truffle-project. 
+
+> Remember to do this in your `lending-app` folder. Note: you will also need your Infura Ropsten API key/token again.
 
 > In your Terminal, create an environment variable for your account's mnenomic that you get from your Rosten MetaMask account. **Note** - you can find the mnenomic from your account Settings -> Reveal Seed Words.
 ```
@@ -39,7 +41,7 @@ module.exports = {
 };
 ```
 
-> Ensure your Ropsten Account1 has some Ether. If not, acquire some using https://faucet.metamask.io/.
+> Ensure your Ropsten Account1 has some ETH. If not, acquire some using https://faucet.metamask.io/.
 
 ### Deploy the contract
 > Deploy to the Ropsten network with:
@@ -72,7 +74,7 @@ Saving artifacts...
 
 **Great work!** You have successfully deployed your Lending smart contract on the public Ropsten test network!
 
-### Run your Lending DApp
+### Run your lending app
 >There isn't anything in your code that you need to change to run your web DApp as MetaMask will inject the correct web3 provider. Run the `lite-server` again from your Terminal with:
 ```
     npm run dev
@@ -83,7 +85,7 @@ Saving artifacts...
 
 ![Ropsten loans dashboard with transaction](images/Ropsten_loans_dashboard.png)
 
->Now try to issue the loan using `Loan ID = 1`. You should see a similar MetaMask notification asking you to confirm the Ether transaction and corresponding gas fees. After ~30 seconds, you should see a transaction confirmation and the Ether amount removed from the current (creditor) account and send to the debtor account.
+>Now try to issue the loan using `Loan ID = 1`. You should see a similar MetaMask notification asking you to confirm the ETH transaction and corresponding gas fees. After ~30 seconds, you should see a transaction confirmation and the Ether amount removed from the current (creditor) account and send to the debtor account.
 
 **Congratulations!** You have successfully run your Lending DApp and executed transactions on the public Ropsten test network!
 

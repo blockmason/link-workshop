@@ -1,12 +1,16 @@
 # Create, deploy, and interact with a basic Smart Contract through a web DApp
 ## Goal
-In this activity, we will program a basic Smart Contract, deploy it to a local network and interact with it using a basic front-end. 
+In this activity, we will program a basic Smart Contract, deploy it to a local network and interact with it using a basic front-end web app. 
 
 ## Exercise
 This activity will require you to:
-* Use Solidity to write a basic smart contract to record a loan
+* Use Solidity to write a basic smart contract to record a loan. We will use the tool `EthFiddle` to write up and test the code before deploying it locally.
+* Use Truffle - an environment and framework for blockchain development
 * Use web3.js to interact between a local blockchain network and a web front-end
-* Use HTML and JavaScript for the front-end web application
+* Use HTML and JavaScript for the front-end web app, similar to Activity 2. 
+
+## Presenter notes
+* Also discuss Remix IDE as a tool for smart contract development using Solidity
 
 ### Setup
 
@@ -19,12 +23,12 @@ This will install all the node dependencies.
 > Ensure you have Ganache running a local blockchain at `http://127.0.0.1:7545`.
 
 ### Create a Smart Contract
-
 First, we will create the `Lending` contract which will be written in Solidity and stored in the `/contracts` folder. For an introduction to Solidity contracts, check out `https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html`
+To help us code in Solidity, we will use the **EthFiddle** tool at https://ethfiddle.com/
 
-> Create a file `Lending.sol` in the `contracts/` folder.
+> Create a file `Lending.sol` in the `contracts/` folder. Once our Solidity code is ready, we will copy the code into this file.
 
-> First, let's add the boilerplate code specifying the version of Solidity for the compiler and the contract name:
+> Now back in EthFiddle, let us add the boilerplate code specifying the version of Solidity for the compiler and the contract name:
 ```
     pragma solidity ^0.4.24;
 
@@ -78,7 +82,7 @@ By using the keyword `public`, we are able to access the `loans` dictionary and 
         loans[loansCount] = Loan(creditor, debtor, amount, term, interest);;
     }
 ```
->Save your `Lending.sol` contract and create a file `2_deploy_contracts.js` in the `migrations/` folder.
+>If you can compile and deploy your Solidity code without any errors, copy the code and save it in your `Lending.sol` contract and create a file `2_deploy_contracts.js` in the `migrations/` folder.
 
 The files in the `migrations/` folder will deploy the contracts onto the blockchain. 
 
@@ -104,35 +108,24 @@ This will compile and build your contract artifacts in a folder called `build/`.
 ```
 You should see each contract deployed with a hash address in your Terminal output. 
 
-In addition, you should also see the first account in Ganache have slightly less than 100ETH as a small amount of ETH was used as a gas fee to transact with the local network.
+In addition, you should also see the first account in Ganache have slightly less than 100 ETH as a small amount of ETH was used as a gas fee to transact with the local network.
 
 So we have now created our Lending smart contract and deployed it to our local blockchain.
 
-### Front-end Setup with MetaMask
+### Front-end setup with MetaMask
 In order to interact with our Lending smart contract, we will work with a basic front-end consisting of HTML/CSS and JavaScript. We will use Bootstrap for our CSS. 
 
 The focus for this part of the activity will be on the JavaScript code in `src/js/app.js`. 
 
-Notice in our `package.json` that we have `lite-server` installed under the `dev` script, which will be used to run our Lending app locally. 
-
-> To get the Lending app up and running using `lite-server`, run:
+> To get the Lending app up and running using `lite-server`, as before, run:
 ```
     npm run dev
 ```
 > Now direct your browser to `http://localhost:3000` to see the Loans Dashboard.
 
-You will notice that the web page indicates it is loading, but no content appears because we need to first connect the front-end application with our local blockchain. We will do this by setting up the MetaMask chrome extension, similar to what we did in Activity 2.
+You will notice that the web page indicates it is loading, but no content appears because we need to first connect the front-end app with our local blockchain.
 
-> Open up the MetaMask extension and *Import using account seed phrase*. The phrase will be the mnemonic from Ganache. 
-
-![Import using account seed phrase](images/MetaMask_restore_seed_phrase.png)
-
->Then from the list of networks, select `Custom RPC`. Here, set the *New RPC URL* to `http://127.0.0.1:7545`
-
-![Set new RPC](images/MetaMask_set_rpc.png)
-
->**Note:** While all 10 of your local Ganache blockchain accounts should load automatically, you may only end up with just the first account and you will have to add additonal accounts manually using the *Import Account* function. 
-![Import account](images/MetaMask_import_account.png)
+> Follow the steps from Activity 2 to connect MetaMask to your local blockchain if you have not already done so. 
 
 >Once MetaMask is properly configured, you should see your web application load.
 ![Loaded dashboard](images/Lending_dashboard_loaded.png)
@@ -145,12 +138,11 @@ You will notice that the web page indicates it is loading, but no content appear
 * The `accountAddress` info after the form
 
 ### Configure app.js
-The scaffolding code for our `app.js` looks like the following which runs the web app upon window load and initiates and sets the web3 provider:
+The scaffolding code for our `app.js` should look familiar from Activity 2:
 ```
 App = {
   web3Provider: null,
   contracts: {},
-  account: '0x0',
 
   init: function() {
     return App.initWeb3();
@@ -207,8 +199,8 @@ $(function() {
 ```
 >Compare what you see here in `app.js` with the code in `index.html`. 
 
-### Create the Loan
-For each function in our `App` object in `app.js`, we need to take an instance of the deployed Lending smart contract in order to then apply a smart contract function such as `addLoan(...)`.
+### Create the loan
+For each function in our `App` object in `app.js`, we need to take an instance of the deployed Lending smart contract in order to then execute the contract's function such as `addLoan(...)`.
 ```
     App.contracts.Lending.deployed().then(function(instance) {
         // Call instance.addLoan(...) for example
@@ -239,12 +231,12 @@ createLoan: function() {
     });
 }, 
 ```
-### Issue the Loan
+### Issue the loan
 Recall in Activity 1 we used `web3.eth.sendTransaction(...)`function to transfer ETH. We will do the same here. 
 
-**Note:** Because will be using our local (i.e. unlocked) blockchain, and later MetaMask which holds our account private keys to sign transactions, we can use `web3.eth.sendTransaction(...)`. However, if we do not use MetaMask's injected web3 instance and we still want to transact over the Ethereum testnet or mainnet, we will need to build, sign and broadcast our transaction as we did in Activity 2. 
+**Note:** Because will be using our local (i.e. unlocked) blockchain, and later MetaMask which holds our account private keys to sign transactions, we can use `web3.eth.sendTransaction(...)`. However, if we do not use MetaMask's injected web3 instance and we still want to transact over the Ethereum testnet or mainnet, we will need to build, sign and broadcast our transaction as described in Activity 2b. 
 
-> Instead of using `.then(function(...))` to resolve our Promise and execute our callback as we did in `createLoan()`, we will use the `async/await` special syntax in JavaScript EC6 (https://javascript.info/async-await) to deal with Promises without creating long Promise chains:  
+> Instead of using `.then(function(...))` to resolve our Promise and execute our callback as we did in `createLoan()`, we can also use the `async/await` special syntax in JavaScript EC6 (https://javascript.info/async-await) to retrieve an instance of our contract and our `loan` object. However, the `web3.eth.sendTransaction(...)` function, based on the MetaMask web3 instance, still uses callbacks. Note: this is just an example - use the approach to dealing with Promises that you are most comfortable with!
 ```
     issueLoan: async function() {
     const loanID = $('#issueLoan').val();
@@ -266,7 +258,7 @@ Recall in Activity 1 we used `web3.eth.sendTransaction(...)`function to transfer
 ```
 > Compare and contrast the `Promise.then(function(err, result) {...})` approach with using `async/await`. 
 
-### Render Lending data on webpage
+### Render lending data on webpage
 Now let's complete our `render` function in `app.js`.
 ```
 render: function() {
@@ -288,7 +280,7 @@ render: function() {
     ...
 ```
 
->Then let us add the active account's information at the bottom of the webpage in the html paragraph with id `#accountAddress`. One way to get the active account is by calling the async function `web3.eth.getCoinbase(...)` which takes in a callback using the address of the active client as the result:
+>Then let us add the active account's information at the bottom of the webpage in the html paragraph with id `#accountAddress`. Recall from Activity 2 that we can call the async function `web3.eth.getCoinbase(...)` which takes in a callback as follows:
 ```
     web3.eth.getCoinbase(function(err, result) {
       if (err === null) {
@@ -363,7 +355,7 @@ render: function() {
       console.warn(error);
     });
 ```
-That's it! Your Lending DApp is ready to go! Try to record a loan to another address. For each record, you will need to accept the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). 
+That's it! Your Lending app is ready to go! Try to record a loan to another address. For each record, you will need to accept the gas fee for the transaction in MetaMask (it should prompt you automatically through a pop-up). 
 
 When you switch MetaMask accounts, you should only see the existing loans where your current account is the 'creditor'.
 
