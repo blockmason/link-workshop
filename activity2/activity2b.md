@@ -1,21 +1,16 @@
 # Building, signing and broadcasting an Ethereum transaction
 ## Goal
-In this activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain **without** running your own Ethereum node or using a wallet or browser extension like MetaMask (e.g. for a mobile DApp). This activity will give you a feel for what is happening 'under-the-hood' when creating an Ethereum transaction. 
+In this stretch activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain **without** running your own Ethereum node or using a wallet or browser extension like MetaMask as we did before. This activity will give you a more detailed look at what is happening 'under-the-hood' when creating an Ethereum transaction. 
 
 ## Exercise
 This activity will require you to:
 * Use the specialized `ethereumjs-tx` library (https://github.com/ethereumjs/ethereumjs-tx/blob/master/docs/index.md) to create a transaction object.
-* Interact with the `Ropsten` Ethereum test network
-* Interact with MetaMask - a browser extension for accessing Ethereum based decentralized applications - only for getting test accounts and ETH setup. 
+* Interact with the `Ropsten` Ethereum test network using an Infura API key 
 * Build, sign and broadcast an ETH transfer transaction on the `Ropsten` test network
 * Validate that the transaction has been broadcasted publicly at https://ropsten.etherscan.io
 
 ### Setup
-> Download the MetaMask browser extension and setup 2 accounts. We are only using MetaMask for the public/private account keys and to obtain some test ETH for this actviity.
-
-![Create MetaMask Accounts](images/MetaMask_create_account.png)
-
-You could also create test accounts locally by using web3 in Node. For example:
+> You will need a couple of test accounts with test ETH. You can either use the MetaMask accounts or create your own locally by using web3 in Node. For example:
 ```
     > const Web3 = require('web3')
     > const web3 = new Web3("https://ropsten.infura.io/v3/<Your API Key>")
@@ -29,7 +24,7 @@ You could also create test accounts locally by using web3 in Node. For example:
 }
 ```
 
-> Send some test ETH to your Account1 address using https://faucet.metamask.io/ (make a few requests so that your Account1 has 2 or 3 Ether). Note it will take 20-30 seconds for each transfer to complete.
+> As in the previos exercise, send some test ETH to your Account1 address using https://faucet.metamask.io/ (make a few requests so that your Account1 has 2 or 3 Ether). Note it will take 20-30 seconds for each transfer to complete.
 
 ![Send test Ether](images/MetaMask_ether_faucet.png)
 
@@ -47,7 +42,7 @@ You could also create test accounts locally by using web3 in Node. For example:
     npm install ethereumjs-tx
 ```
 
-> Obtain your `Ropsten` test network API url. For example: `https://ropsten.infura.io/v3/182b941b70e6443b8854cc53786a3007`
+> Obtain your `Ropsten` test network API url in Infura. For example: `https://ropsten.infura.io/v3/182b941b70e6443b8854cc53786a3007`
 
 > Create a file called `signedTransaction.js` and start by defining the following variables:
 ```
@@ -79,7 +74,7 @@ When using the `ethereumjs-tx` library, the `sign()` function takes a private ke
     const privateKey1 = Buffer.from(process.env.PK_ACCOUNT_1, 'hex')
 ```
 
-### Build the Transaction
+### Build the transaction
 The transaction object looks similar to the object passed in the `web3.eth.sendTransaction()` function from activity1 but contains a few more details. For reference, see here: https://github.com/ethereumjs/ethereumjs-tx
 
 ```
@@ -130,7 +125,7 @@ Putting this together looks like:
         // TODO: Broadcast the transaction
     })
 ```
-### Sign the Transaction
+### Sign the transaction
 >Following this as our reference (https://web3js.readthedocs.io/en/1.0/web3-eth.html#sendsignedtransaction) use account1 to sign the transaction with its buffered private key:
 ```
     const tx = new Tx(txObject)
@@ -174,7 +169,7 @@ We then need to serialize the signed transaction. We serialize data in order to 
         // TODO: Broadcast the transaction
     })
 ```
-### Broadcast the Transaction to the Network
+### Broadcast the transaction to the Ethereum network
 Lastly, to broadcast the transaction, we call the `web3.eth.sendSignedTransaction()` function and pass in the `rawTx` string. The response from this function call is a *transaction hash* - essentially an ID indicating the transaction has been broadcast on the network.
 
 >Add the code to call the `sendSignedTransaction` function:
