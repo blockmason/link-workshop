@@ -9,6 +9,10 @@ This activity will require you to:
 * Interact with the local blockchain through web3js functions and work with promises and basic callbacks
 * Send ETH cryptocurrency between 2 unlocked accounts on your local blockchain
 
+## Presenter Notes
+* Discuss the difference between the current web3 release (v0.2x.x) and the beta version (v1.0.0).
+* Discuss what is meant by a "web3 instance". 
+
 ### Setup
 > Install web3 using the node package manager in your Terminal:
 ```
@@ -29,7 +33,7 @@ This activity will require you to:
 ```
 
 ### The web3 object
-*Discuss web3 object, and in particular:*
+Key attributes or functions of web3 include:
 * `unitMap` object - wei, gwei, ether values and units
 * `web3.utils` object functions `toWei` and `fromWei` for unit conversions and `toHex` to convert to hexadecimal.
 * The `web3.eth` object and in particular the `getAccounts` `getBalance` and `sendTransaction`  functions
