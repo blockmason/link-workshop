@@ -10,7 +10,7 @@ This activity will require you to:
 * Interact with the `Ropsten` Ethereum test network and record ETH transfers
 * Use https://ropsten.etherscan.io/ to see the details of the transaction
 
-## Presenter notes
+## General activity notes
 * Use the term 'App' going forward to mean 'DApps'
 * If there are issues with correctly syncing MetaMask with the local blockchain and corresponding accounts, try to `Reset Account` under MetaMask settings
 * This activity will use `lite-server`. Configuration for `lite-server` is set in `bs-config.json` so changes to the default PORT or browser can be set there.

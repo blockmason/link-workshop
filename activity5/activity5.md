@@ -11,9 +11,8 @@ This activity will require you to:
 * Compare and contrast the approaches (web3.js vs. Link)
 
 ### Link Setup
-> Obtain your Link invitation code
 
-> Register with Link at https://mason.link
+> Signup with Link at https://mason.link
 
 > We will use the Lending contract you deployed on the Ropsten test network. You will need to copy the hash address the contract was deployed at. If you can't find this, redeploy the contract from `activity3/lending-app` with:
 ```

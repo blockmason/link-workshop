@@ -9,7 +9,7 @@ This activity will require you to:
 * Interact with the local blockchain through web3js functions and work with promises and basic callbacks
 * Send ETH cryptocurrency between 2 unlocked accounts on your local blockchain
 
-## Presenter Notes
+## General activity notes
 * Discuss the difference between the current web3 release (v0.2x.x) and the beta version (v1.0.0).
 * Discuss what is meant by a "web3 instance". 
 
