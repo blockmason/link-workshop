@@ -14,15 +14,21 @@ This activity will require you to:
 * Discuss what is meant by a "web3 instance". 
 
 ### Setup
-> Install web3 using the node package manager in your Terminal:
+> In the `link-workshop-master/activity1/` folder, start with:
 ```
-    npm install web3 
+npm init
+```
+And just press enter through all the default settings.
+
+> Next, install web3 using the node package manager in your Terminal:
+```
+npm install web3 
 ```
 > Open up Ganache. By default, your local blockchain will run on `http://127.0.0.1:7545`.
    
 > Run node from your Terminal window: 
 ```
-    node
+node
 ```
 > Create an instance of the web3 libary you just installed and connect it with our local blockchain :
 ``` 
