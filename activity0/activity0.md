@@ -21,12 +21,13 @@ In this activity, we will download all the necessary tools, libraries and applic
 >MetaMask is a Chrome extension which interfaces with the Ethereum network from your browser. We will use it to interface with the Ethereum test network, `Ropsten`.
 
 ### Infura API Key
-Infura provides easy-to-use APIs to interact with the Ethereum network without running your own Ethereum node. Register for an API key at https://infura.io/register. You will then be able to access URLs containing your API key for the Ethereum mainnet and testnets. 
+>Infura provides easy-to-use APIs to interact with the Ethereum network without running your own Ethereum node. Register for an API key at https://infura.io/register. You will then be able to access URLs containing your API key for the Ethereum mainnet and testnets. 
 
 ### web3.js
 >We will be using the web3.js library extensively in this workshop - https://web3js.readthedocs.io/en/1.0/getting-started.html. It is worth pointing out that while we will install and use functions locally that are part of the latest documentation, v1.0 is still in beta and has not been released yet! The existing web3 release is 0.2x.x, used by MetaMask for example, and the documentation is provided here: https://github.com/ethereum/wiki/wiki/JavaScript-API. 
 
-
+### Postman
+> It is recommended that you download an API development tool like Postman (https://www.getpostman.com/) which will be helpful in Activity 5. Alternatively, you could use cURL in Terminal. 
 
 
 
