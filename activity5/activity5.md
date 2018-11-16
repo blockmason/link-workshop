@@ -1,12 +1,14 @@
-# Refactor your Lending DApp to use Blockmason Link
+# Refactor your Lending App to use Blockmason Link
 ## Goal
-In this activity, we will use Link - a smart contract API wrapper to refactor our Lending DApp.
+In this activity, we will use Link - a smart contract API wrapper to refactor our Lending app's `createLoan()` function. 
+
+**Note:** Link is still in early stage beta and so its setup and use will not be as streamlined as we intent it to be in the near future. But you get the first peek! 
 
 ## Exercise
 This activity will require you to:
 * Add your Lending smart contract to Link
-* Refactor your app.js to use Link
-* Compare and contrast the effort in building DApps using traditional web3js tools vs. Link
+* Refactor the `createLoan()` function in app.js to use Link
+* Compare and contrast the approaches (web3.js vs. Link)
 
 ### Link Setup
 > Obtain your Link invitation code
@@ -68,14 +70,16 @@ The Lending contract address in this case is `0xc980b32ed01fac955520f390fde00518
 
 ![Link App Setup](images/Link_App_setup.png)
 
-This creates an app with 3 functions:
+This creates an app with 3 functions. Note the data types on the right represent the _**return data type(s)**_ of the function call on the left. 
 
 ![Link App Functions](images/Link_App_functions.png)
 
-The first function is the `addLoan(...)` which takes in 5 parameters. Next we have the `loans` array which takes in a Loan ID parameter to retrive a Loan object. Finally, we have the `loansCount` variable which does not take in any parameters. 
+The first function `loans(loanID)` retrieves a `Loan` object that contains the creditor address, debtor address, amount uint, term uint and interest rate uint. Next we have the `loansCount` value which is just an uint. Finally, we have the `addLoan(..)` function which does return anything. 
 
 ### Consumers Setup
-In Link, _consumers_ represent front-end apps, individuals or anything that will transact with the smart contract on the network. For this activity, create a `Lender app front-end` consumer which will be provided with a **Funding Address**. 
+In Link, _consumers_ represent front-end apps, individuals or anything that will transact with the smart contract on the network. For this activity, create a `lending-app-client` consumer which will be provided with a **Funding Address**. 
+
+> The important thing to take note of here is the **Access Token that will only be displayed once** after you have created your consumer. Copy this Access Token which will be used when making the Link API calls.
 
 ![Link Consumer Setup](images/Link_Consumer_setup.png)
 
@@ -86,34 +90,72 @@ In Link, _consumers_ represent front-end apps, individuals or anything that will
 ### Blockmason Link API documentation
 > The API documentation can be found here: https://mason.link/api/
 
-### Constructing the API Request
-Each consumer in Link will have a _**Consumer Access Token**_ to be used when making requests. Think of this token as the API key which you will need to send as part of the `access_token` request query parameter. 
+### Constructing the API POST Request
+> It is recommended that you download a tool like Postman, or if you prefer to use cURL statements in the Terminal, to help construct the POST request first before we implement the `$.post(), $.ajax()` function in our `app.js`.
 
-> Here's an example of a cURL POST request to the endpoint `lending-app/loansCount`.  Note: Pipe the response into a json formatter like `python json.tool`:
+
+Each consumer in Link will use the _**Consumer Access Token**_ you copied before when making requests. Think of this token as the API key which you will need to send as part of the `access_token` request query parameter. For example:
+``` 
+https://api.block.mason.link/@harish/lending-app/addLoan?access_token=<consumer_access_token>
 ```
-curl -X POST -H 'Content-Type: application/json' 'https://api.block.mason.link/@harish/lending-app/loansCount?access_token=gyObHEUPNPDJm2VgY9tDHI23c-mrSr5KdHBUvgOxSJaI' | python -m json.tool
+
+Because we are making POST requests to a remote network, it will take some time for the requests to resolve. Recall in an earlier activity that transactions with the `Ropsten` network would take 20-30 seconds to process. 
+
+The approach with Link for executing POST requests is as follows:
+1. The POST request immediately returns a json response object that contains details of the request as well as an `id`.
+2. We can query the `id` to see if the request has successfully resolved.
+
+Let's look at this in action as we POST to the `addLoan` function.
+
+> The `addLoan` function takes the following parameters:
+* "creditor" : address string
+* "debtor" : address string
+* "amount" : integer* (or hex string)
+* "term": integer (or hex string)
+* "interest": integer(or hex string)
+
+The reason for specifying _(or hex string)_ is because eventually everything passed into a Solidity contract function gets serialized before being transacted on the Ethereum network. 
+
+Recall that the `amount` is in Wei which, for 1 ETH is 10^18 Wei. This number is too large to be represented in JavaScript as a raw number. Hence, it needs to be converted into hex string for our POST request. The `term` and `interest` values are small and OK to use as integers. 
+
+> Putting it all together into a cURL statement, we get:
 ```
-And here is the `CreateInvocationResponse` object that is returned:
+curl -X POST -H 'Content-Type: application/json' -d '{ "creditor":"0xdef4f71e2da944ca4118c04ccf120f8a2bc7b92b","debtor":"0x20ecfb735eead9902b43cd553f485fd7a04d2791",
+"amount":"0x29a2241af62c0000",
+"term":6,
+"interest":3
+}' 'https://api.block.mason.link/@harish/lending-app/addLoan?access_token=33uTbK_be1F2GOw0glhQRoerT_Y3f8WMUaXqJ9kUREzR' | python -m json.tool
+```
+Note: By piping the response into a json formatter like `python json.tool`, we get a nicer output.
+
+
+The response looks like:
 ```
 {
     "data": {
         "attributes": {
-            "createdAt": "2018-11-14T01:29:22.684Z",
-            "inputs": {},
+            "createdAt": "2018-11-16T01:21:30.353Z",
+            "inputs": {
+                "creditor": "0xdef4f71e2da944ca4118c04ccf120f8a2bc7b92b",
+                "debtor": "0x20ecfb735eead9902b43cd553f485fd7a04d2791",
+                "amount": "0x29a2241af62c0000",
+                "term": 6,
+                "interest": 3
+            },
             "isRejected": false,
             "isResolved": false
         },
-        "id": "86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0",
+        "id": "LQ7bzzQY7hFbIB2M4QjUdv85vLHkPFoIKNDLrwHX5m4",
         "relationships": {
             "function": {
                 "data": {
-                    "id": "DyNsZFQsxP87TaiYIT4DdmDB-fta3CjJbYytiDEdDAA",
+                    "id": "hx02iGhC7xf_qZpgs66tciazf2FzIc6NnIylbxevVhk",
                     "type": "function"
                 }
             },
             "owner": {
                 "data": {
-                    "id": "66ec4soxCaPD8d05jJKO_pSSsKT6qd_N-gxg-jRQ-IM",
+                    "id": "JD66EmDSP2BaA9isk1See6VPKN3rKdYiUd9QExxgzxs",
                     "type": "consumer"
                 }
             }
@@ -123,53 +165,85 @@ And here is the `CreateInvocationResponse` object that is returned:
     "jsonapi": "1.0",
     "meta": {
         "name": "@blockmason/link-api",
-        "version": "0.6.3"
+        "version": "0.7.0"
     }
 }
 ```
-Because we are making transaction requests to a remote network (Ropsten in this case), we essentially get back an object containing an _invocation_ id that we can use to make a follow-up GET request for the result. Think of it as somewhat like a process with a ticketing system - you make a request to get the latest `loansCount` value, receive a ticket,and then poll the system with the ticket ID to get the value. From the above reponse, the invocation id is `86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0`. 
+In Postman, the request body and resulting output look like:
 
-> We then make a follow-up GET request using the invocation id (and the access token): 
+![Link Postman Request](images/Link_Postman_req_resp.png)
+
+> Now to check that the POST request successfully resolved, we use the response's `data.id` identifier, which above is `LQ7bzzQY7hFbIB2M4QjUdv85vLHkPFoIKNDLrwHX5m4` to make a subsequent GET request to the following URL:
+
 ```
-curl 'https://api.block.mason.link/invocations/86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0?access_token=gyObHEUPNPDJm2VgY9tDHI23c-mrSr5KdHBUvgOxSJaI' | python -m json.tool
+https://api.block.mason.link/invocations/LQ7bzzQY7hFbIB2M4QjUdv85vLHkPFoIKNDLrwHX5m4?access_token=33uTbK_be1F2GOw0glhQRoerT_Y3f8WMUaXqJ9kUREzR
 ```
-And the output object looks like:
+Note the `/invocations/` as part of the URL. The response will look something like:
 ```
 {
     "data": {
         "attributes": {
-            "createdAt": "2018-11-14T01:02:55.023Z",
-            "inputs": {},
+            "createdAt": "2018-11-16T01:38:25.123Z",
+            "inputs": {
+                "creditor": "0xdef4f71e2da944ca4118c04ccf120f8a2bc7b92b",
+                "debtor": "0x20ecfb735eead9902b43cd553f485fd7a04d2791",
+                "amount": "0x29a2241af62c0000",
+                "term": 4,
+                "interest": 4
+            },
             "isRejected": false,
             "isResolved": true,
-            "outputs": [
-                1
-            ]
+            "outputs": {}
         },
         "relationships": {
             "function": {
                 "data": {
-                    "id": "DyNsZFQsxP87TaiYIT4DdmDB-fta3CjJbYytiDEdDAA",
+                    "id": "hx02iGhC7xf_qZpgs66tciazf2FzIc6NnIylbxevVhk",
                     "type": "function"
                 }
             },
             "owner": {
                 "data": {
-                    "id": "66ec4soxCaPD8d05jJKO_pSSsKT6qd_N-gxg-jRQ-IM",
+                    "id": "JD66EmDSP2BaA9isk1See6VPKN3rKdYiUd9QExxgzxs",
                     "type": "consumer"
                 }
             }
         },
-        "id": "86N4M_mcl2Qke9EaeB-Fa5XFwL0e8G4mcobXVKGMAx0",
+        "id": "_aHJgODUmS70odKBfV2sTSiosrpmJMENsOoat4GqdYU",
         "type": "invocation"
     },
     "jsonapi": "1.0",
     "meta": {
         "name": "@blockmason/link-api",
-        "version": "0.6.3"
+        "version": "0.7.0"
     }
 }
 ```
-The data we want is in `data["attributes"]["outputs"][0]` which has the value `1`. 
+ We are most interested in the `data.attributes.isResolved` value. If the original POST request has successfully resolved, this value will be `true`. 
+
+We can also check that the `addLoan` function has been successfully called if the transaction is visible in Etherscan under the contract address at: https://ropsten.etherscan.io/address/<contract_address>.
+
+### Update the `createLoan()` function 
+
+> Now that you know how to construct the API request, use `$.ajax(..)` or `$.post(..)` in `app.js` to POST to the `addLoan` function. 
+```
+createLoan: function() {
+    const debtor = $('#debtor').val();
+    const loanAmount = $('#loanAmount').val();
+    const loanTerm = $('#loanTerm').val();
+    const interestRate = $('#interestRate').val();
+    
+    // REFACTOR THIS CODE
+    App.contracts.Lending.deployed().then(function(instance) {
+      instance.addLoan(App.account, debtor, web3.toWei(loanAmount, 'ether'), loanTerm, interestRate, { from: App.account });
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+```
+Details on using jQuery's `ajax()` can be found here: http://api.jquery.com/jquery.ajax/
+
+
+
 
 
