@@ -89,8 +89,7 @@ App = {
     // TODO: Load account data - display active account info on the webpage
     
   },
-
-  // Send money function based on form inputs
+  
   sendMoney: function() {
     //TODO: send money from active account to receiver
 
