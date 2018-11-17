@@ -242,7 +242,37 @@ createLoan: function() {
 ```
 Details on using jQuery's `ajax()` can be found here: http://api.jquery.com/jquery.ajax/
 
+#### Pitfalls to be aware of
 
+> With using Browsersync, we have observed some funny behaviour with the form submission on the front end and the `ajax()` calls in `app.js`. If you find that your `ajax()` call in the `createLoan` function refactor does not trigger, try the following:
+
+1. In your `index.html`, remove the `onSubmit` function call to `App.createLoan()`:
+```
+<form onSubmit="App.createLoan()"> -> <form>
+```
+2. Add an id to the `Record Loan` button:
+```
+<button type="submit" class="btn btn-primary">Record Loan</button>
+
+<button type="submit" class="btn btn-primary" id="recLoanBtn">Record Loan</button>
+```
+3. Now we'll manually add a `.click` event listener and handler in at the bottom of `app.js`:
+```
+$(function() {
+  $(window).load(function() {
+    App.init();
+  });
+  $(document).ready(function() {
+    $('#recLoanBtn').on('click', App.createLoan)
+  });
+});
+```
+4. Finally, we want to ensure nothing is interfering with our `App.createLoan` event call by passing in the event into `createLoan` and calling the `preventDefault()` function as follows:
+```
+createLoan: function(e) {
+    e.preventDefault();
+    ...
+```
 
 
 

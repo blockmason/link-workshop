@@ -46,3 +46,4 @@ By the end of the workshop, participants will:
 * 2:30-2:45     - Break
 * 2:45-3:45     - Activity 5
 * 3:45-4pm      - Wrap up
+  
