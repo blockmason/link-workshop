@@ -1,6 +1,6 @@
 # Ethereum transactions using MetaMask
 ## Goal
-In this activity, we will use the popular MetaMask Chrome browser extension to authorize  ETH transfers between Ethereum accounts using a lightweight **client-side** DApp, on both the local and public Ethereum blockchain.
+In this activity, we will use the popular MetaMask Chrome browser extension to authorize ETH transfers between Ethereum accounts using a lightweight **client-side** DApp, on both the local and public Ethereum blockchain.
 
 ## Exercise
 This activity will require you to:
@@ -36,7 +36,7 @@ Now we will connect MetaMask with our local blockchain.
 
 ![Set new RPC](images/MetaMask_set_rpc.png)
 
->**Note:** While all 10 of your local Ganache blockchain accounts should load automatically, you may only end up with just the first account and you will have to add additonal accounts manually using the *Import Account* function.
+>**Note:** While all 10 of your local Ganache blockchain accounts should load automatically, you may only end up with just the first account and you will have to add additonal accounts manually using the *Import Account* function and copying in the account's private key.
 
 ![Import account](images/MetaMask_import_account.png)   
 
@@ -89,7 +89,7 @@ App = {
     // TODO: Load account data - display active account info on the webpage
     
   },
-  
+
   sendMoney: function() {
     //TODO: send money from active account to receiver
 

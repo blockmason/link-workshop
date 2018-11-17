@@ -46,7 +46,7 @@ Key attributes or functions of web3 include:
 
 ### Get Account Balance
 
-Now let us get the balance of one of the local accounts. Function calls to the blockchain return **promises** so we can invoke callback functions which execute after the promise has been fulfilled. 
+Now let us get the balance of one of the local accounts. Function calls to the blockchain return **promises** so we can invoke functions which execute after the promise has been fulfilled. 
 
 > From your local blockchain, select the address of the first account. E.g. `0xdeF4f71e2DA944Ca4118c04CcF120f8a2bc7B92B`. Then call the `getBalance` function in the `web3.eth` object:
 ```
@@ -94,6 +94,6 @@ From the web3js docs (https://web3js.readthedocs.io/en/1.0/web3-eth.html#eth-sen
         value: localWeb3.utils.toWei('1', 'ether')
     })
 ```
-This, as expected, returns a promise. Taking a look at the account summaries of our local blockchain in Ganache, we see the first account balance has been reduced by 1 ETH and the second account balance has increased by 1 ETH. **We have successfully excuted our first money transfer!**
+This, as expected, returns a promise which will resolve to a **transaction hash**. Taking a look at the account summaries of our local blockchain in Ganache, we see the first account balance has been reduced by 1 ETH and the second account balance has increased by 1 ETH. **We have successfully excuted our first money transfer!**
 
 
