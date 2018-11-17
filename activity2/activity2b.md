@@ -1,6 +1,8 @@
 # Building, signing and broadcasting an Ethereum transaction
 ## Goal
-In this stretch activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain **without** running your own Ethereum node or using a wallet or browser extension like MetaMask as we did before. This activity will give you a more detailed look at what is happening 'under-the-hood' when creating an Ethereum transaction. 
+In this stretch activity, we will build, sign and broadcast an ETH transfer transaction to a public test network. This is useful when you want to make transactions on the Ethereum blockchain **without** running your own Ethereum node or using a wallet or browser extension like MetaMask as we did before. This activity will give you a more detailed look at what is happening 'under-the-hood' when creating an Ethereum transaction.
+
+**Reference for this activity:** https://www.youtube.com/watch?v=uFdjZ-B3GCM&list=PLS5SEs8ZftgXlCGXNfzKdq7nGBcIaVOdN&index=3
 
 ## Exercise
 This activity will require you to:
