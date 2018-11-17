@@ -34,3 +34,15 @@ By the end of the workshop, participants will:
 * Create, deploy and interact with your own smart contract, both locally and on the public testnet
 * Learn and debug some common security flaws in smart contract development
 * Be the first users of Blockmason Link!
+
+## Devhub Workshop Timing
+* 10-10:30am    - Intros, setup
+* 10:30-11am    - Activity 1
+* 11-12pm       - Activity 2
+* 12-12:30pm    - Lunch, Activity 2b*
+* 12:30-1:30pm  - Activity 3
+* 1:30-2pm      - Activity 3b
+* 2-2:30pm      - Activity 4
+* 2:30-2:45     - Break
+* 2:45-3:45     - Activity 5
+* 3:45-4pm      - Wrap up
