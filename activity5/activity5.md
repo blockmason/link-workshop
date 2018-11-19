@@ -115,7 +115,7 @@ Let's look at this in action as we POST to the `addLoan` function.
 
 The reason for specifying _(or hex string)_ is because eventually everything passed into a Solidity contract function gets serialized before being transacted on the Ethereum network. 
 
-Recall that the `amount` is in Wei which, for 1 ETH is 10^18 Wei. This number is too large to be represented in JavaScript as a raw number. Hence, it needs to be converted into hex string for our POST request. The `term` and `interest` values are small and OK to use as integers. 
+Recall that the `amount` is in Wei which, for 1 ETH is 10^18 Wei. This number is too large to be represented in JavaScript as a raw number. Hence, it is better to be converted into hex string for our POST request. The `term` and `interest` values are small and OK to use as integers. 
 
 > Putting it all together into a cURL statement, we get:
 ```
@@ -224,7 +224,7 @@ We can also check that the `addLoan` function has been successfully called if th
 
 ### Update the `createLoan()` function 
 
-> Now that you know how to construct the API request, use `$.ajax(..)` or `$.post(..)` in `app.js` to POST to the `addLoan` function. 
+> Now that you know how to construct the API request, use `fetch()` or even `$.ajax(..)` or `$.post(..)` in `app.js` to POST to the `addLoan` function. 
 ```
 createLoan: function() {
     const debtor = $('#debtor').val();
@@ -240,32 +240,26 @@ createLoan: function() {
     });
   },
 ```
+Details on using the `fetch()` API can be found here: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
 Details on using jQuery's `ajax()` can be found here: http://api.jquery.com/jquery.ajax/
 
 #### Pitfalls to be aware of
 
-> With using Browsersync, we have observed some funny behaviour with the form submission on the front end and the `ajax()` calls in `app.js`. If you find that your `ajax()` call in the `createLoan` function refactor does not trigger, try the following:
+> With using Browsersync, we have observed some funny behaviour with the form submission on the front end and the POST calls in `app.js`. If you find that your POST call in the `createLoan` function refactor does not trigger, try the following:
 
-1. In your `index.html`, remove the `onSubmit` function call to `App.createLoan()`:
+1. In your `index.html`, remove the `onSubmit` function call to `App.createLoan()` and just give it an id:
 ```
-<form onSubmit="App.createLoan()"> -> <form>
+<form onSubmit="App.createLoan()"> -> <form id="form">
 ```
-2. Add an id to the `Record Loan` button:
+2. Now, in our `app.js`,  we will manually add an **on submit**  event listener and handler in the `init` function:
 ```
-<button type="submit" class="btn btn-primary">Record Loan</button>
+init: function() {
+    const form = $("#form");
+    form.on("submit", App.createLoan);
 
-<button type="submit" class="btn btn-primary" id="recLoanBtn">Record Loan</button>
-```
-3. Now we'll manually add a `.click` event listener and handler in at the bottom of `app.js`:
-```
-$(function() {
-  $(window).load(function() {
-    App.init();
-  });
-  $(document).ready(function() {
-    $('#recLoanBtn').on('click', App.createLoan)
-  });
-});
+    return App.initWeb3();
+  },
 ```
 4. Finally, we want to ensure nothing is interfering with our `App.createLoan` event call by passing in the event into `createLoan` and calling the `preventDefault()` function as follows:
 ```
@@ -273,6 +267,38 @@ createLoan: function(e) {
     e.preventDefault();
     ...
 ```
+> Here's an example of a refactor solution using `fetch()`:
+```
+createLoan: function(e) {
+    e.preventDefault();
+    const debtor = $('#debtor').val();
+    const loanAmount = $('#loanAmount').val();
+    const loanTerm = $('#loanTerm').val();
+    const interestRate = $('#interestRate').val();
 
+    const baseUrl = 'https://api.block.mason.link/';
+    const contractUrl = '@harish/lending-app/';
+    const accessToken = '33uTbK_be1F2GOw0glhQRoerT_Y3f8WMUaXqJ9kUREzR';
 
+    const Url = baseUrl.concat(contractUrl, 'addLoan', '?access_token=', accessToken);
+    
+    const dataObj = {
+      creditor: App.account,
+      debtor,
+      amount: web3.toHex(web3.toWei(loanAmount, 'ether')),
+      term: loanTerm,
+      interest: interestRate,
+    };
+
+    fetch(Url, {
+      method: "post",
+      headers: { "Content-Type": "application/json"},
+      body: dataObj
+    })
+    .then(function(res) {
+        console.log(res.json());
+    });
+  },
+  ```
+> TODO: Update this refactor to keep polling the `id` returned after the POST request to check with `isResolved` is `true`.  
 
