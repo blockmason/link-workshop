@@ -19,7 +19,7 @@ This activity will require you to:
     > web3.eth.accounts.create()
 { address: '0x24D987cFeB1feD05fDD5187eCeE3AF15b7Baf708',
   privateKey:
-   '0x2eaa2f9297813d3eac5fc137d27c11dba84afbfdbd42477eb311843ee76236f5',
+   '<key>',
   signTransaction: [Function: signTransaction],
   sign: [Function: sign],
   encrypt: [Function: encrypt] 
@@ -44,7 +44,7 @@ This activity will require you to:
     npm install ethereumjs-tx
 ```
 
-> Obtain your `Ropsten` test network API url in Infura. For example: `https://ropsten.infura.io/v3/182b941b70e6443b8854cc53786a3007`
+> Obtain your `Ropsten` test network API url in Infura. For example: `https://ropsten.infura.io/v3/<key>`
 
 > Create a file called `signedTransaction.js` and start by defining the following variables:
 ```

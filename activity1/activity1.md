@@ -63,7 +63,7 @@ Currently we are using a local blockchain but we can do exactly the same thing w
 
 > From the Infura website, select the `MAINNET` endpoint and copy the API URL. This will be our mainnet url that we use to interact with the main ethereum network. 
 ```
-    > const mainnetUrl = 'https://mainnet.infura.io/v3/182b941b70e6443b8854cc53786a3007'
+    > const mainnetUrl = 'https://mainnet.infura.io/v3/<api key>'
     > const mainnetWeb3 = new Web3(mainnetUrl)
     > mainnetWeb3
 ```

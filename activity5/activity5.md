@@ -123,7 +123,7 @@ curl -X POST -H 'Content-Type: application/json' -d '{ "creditor":"0xdef4f71e2da
 "amount":"0x29a2241af62c0000",
 "term":6,
 "interest":3
-}' 'https://api.block.mason.link/@harish/lending-app/addLoan?access_token=33uTbK_be1F2GOw0glhQRoerT_Y3f8WMUaXqJ9kUREzR' | python -m json.tool
+}' 'https://api.block.mason.link/@harish/lending-app/addLoan?access_token=<access_token>' | python -m json.tool
 ```
 Note: By piping the response into a json formatter like `python json.tool`, we get a nicer output.
 
@@ -175,7 +175,7 @@ In Postman, the request body and resulting output look like:
 > Now to check that the POST request successfully resolved, we use the response's `data.id` identifier, which above is `LQ7bzzQY7hFbIB2M4QjUdv85vLHkPFoIKNDLrwHX5m4` to make a subsequent GET request to the following URL:
 
 ```
-https://api.block.mason.link/invocations/LQ7bzzQY7hFbIB2M4QjUdv85vLHkPFoIKNDLrwHX5m4?access_token=33uTbK_be1F2GOw0glhQRoerT_Y3f8WMUaXqJ9kUREzR
+https://api.block.mason.link/invocations/LQ7bzzQY7hFbIB2M4QjUdv85vLHkPFoIKNDLrwHX5m4?access_token=<access_token>
 ```
 Note the `/invocations/` as part of the URL. The response will look something like:
 ```
@@ -278,7 +278,7 @@ createLoan: function(e) {
 
     const baseUrl = 'https://api.block.mason.link/';
     const contractUrl = '@harish/lending-app/';
-    const accessToken = '33uTbK_be1F2GOw0glhQRoerT_Y3f8WMUaXqJ9kUREzR';
+    const accessToken = '<token>';
 
     const Url = baseUrl.concat(contractUrl, 'addLoan', '?access_token=', accessToken);
     

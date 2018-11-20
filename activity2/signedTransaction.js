@@ -5,7 +5,7 @@ const web3 = new Web3('https://ropsten.infura.io/v3/182b941b70e6443b8854cc53786a
 const account1 = '0xeBbB29a4EF9d912C9d1Cd15AFf1c62882CaCb4B1'
 const account2 = '0x066414798190F15E79e4a499df7fA9b61F4BecD3'
 
-const privateKey1 = Buffer.from('68EF6574EF971DBE32C6FD77C5E8AE12A26D7AFA419E38D949A25058036ABE44', 'hex')
+const privateKey1 = Buffer.from('<your_key>', 'hex')
 
 web3.eth.getTransactionCount(account1, (err, txCount) => {
     // Build the transaction
